@@ -64,7 +64,7 @@ class LoginScreen extends ConsumerWidget {
                     
                     // Title
                     Text(
-                      'Welcome to Ape Archive',
+                      'Welcome to අපේ Archive',
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),

@@ -24,12 +24,15 @@ class _AppNavigationState extends State<AppNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: NavigationBar(
+    return Container(
+      color: AppColors.backgroundDark, // Ensure no system UI leaks through
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundDark,
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _screens,
+        ),
+        bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
           setState(() {
@@ -58,6 +61,7 @@ class _AppNavigationState extends State<AppNavigation> {
             label: 'Profile',
           ),
         ],
+        ),
       ),
     );
   }

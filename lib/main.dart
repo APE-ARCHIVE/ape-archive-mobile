@@ -38,19 +38,22 @@ class ApeArchiveApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
 
-    return MaterialApp.router(
-      title: 'Ape Archive',
-      color: const Color(0xFF121212), // Set primary color for system UI
-      debugShowCheckedModeBanner: false,
-      showPerformanceOverlay: false,
-      checkerboardRasterCacheImages: false,
-      checkerboardOffscreenLayers: false,
-      showSemanticsDebugger: false,
-      debugShowMaterialGrid: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark, // Default to dark theme
-      routerConfig: router,
+    return Container(
+      color: const Color(0xFF121212), // Block any system UI colors
+      child: MaterialApp.router(
+        title: 'Ape Archive',
+        color: const Color(0xFF121212), // Set primary color for system UI
+        debugShowCheckedModeBanner: false,
+        showPerformanceOverlay: false,
+        checkerboardRasterCacheImages: false,
+        checkerboardOffscreenLayers: false,
+        showSemanticsDebugger: false,
+        debugShowMaterialGrid: false,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.dark, // Default to dark theme
+        routerConfig: router,
+      ),
     );
   }
 }

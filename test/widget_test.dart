@@ -9,6 +9,6 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: ApeArchiveApp()));
 
     // Verify that the app loads successfully
-    expect(find.text('Welcome to Ape Archive'), findsOneWidget);
+    expect(find.text('Welcome to අපේ Archive'), findsOneWidget);
   });
 }
