@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../shared/theme/app_colors.dart';
 import '../../features/library/presentation/screens/library_browse_screen.dart';
 import '../../features/search/presentation/screens/search_screen.dart';
-import '../../features/forum/presentation/screens/forum_list_screen.dart';
+import '../../features/news/presentation/screens/news_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 
 class AppNavigation extends StatefulWidget {
@@ -42,9 +42,9 @@ class _AppNavigationState extends State<AppNavigation>
       label: 'Search',
     ),
     _NavigationItem(
-      icon: Icons.forum_outlined,
-      selectedIcon: Icons.forum,
-      label: 'Forum',
+      icon: Icons.newspaper_outlined,
+      selectedIcon: Icons.newspaper,
+      label: 'News',
     ),
     _NavigationItem(
       icon: Icons.person_outline,
@@ -56,7 +56,7 @@ class _AppNavigationState extends State<AppNavigation>
   final List<Widget> _screens = const [
     LibraryBrowseScreen(),
     SearchScreen(),
-    ForumListScreen(),
+    NewsScreen(),
     ProfileScreen(),
   ];
 
