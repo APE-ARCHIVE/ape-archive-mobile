@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
@@ -11,7 +10,6 @@ import '../../features/forum/presentation/screens/question_detail_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/resources/presentation/screens/pdf_viewer_screen.dart';
 import '../../features/upload/presentation/screens/upload_screen.dart';
-import '../../features/auth/data/providers/auth_provider.dart';
 import 'app_navigation.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
