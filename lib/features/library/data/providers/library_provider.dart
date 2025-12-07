@@ -1,17 +1,12 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/network/dio_client.dart';
 import '../models/resource_model.dart';
 import '../models/tag_model.dart';
 import '../repositories/library_repository.dart';
 
-// Dio provider
-final _dioProvider = Provider<Dio>((ref) {
-  return Dio();
-});
-
 // Export repository provider for use in other features
 final libraryRepositoryProvider = Provider<LibraryRepository>((ref) {
-  final dio = ref.watch(_dioProvider);
+  final dio = ref.watch(dioProvider); // Use the properly configured Dio from dio_client
   return LibraryRepository(dio: dio);
 });
 

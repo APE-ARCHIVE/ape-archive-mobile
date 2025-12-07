@@ -40,27 +40,58 @@ class LoginScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo with Text and glow
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withOpacity(0.3),
-                            blurRadius: 40,
-                            spreadRadius: 10,
+                    // Logo with refined presentation
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Outer glow layer
+                        Container(
+                          width: 300,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: [
+                                AppColors.primary.withOpacity(0.3),
+                                Colors.transparent,
+                                
+                              ],
+                              stops: const [0.0, 1.0],
+                            ),
                           ),
-                        ],
-                      ),
-                      child: Image.asset(
-                        'assets/icons/Logo_with_text.png',
-                        width: 240,
-                        height: 240,
-                        fit: BoxFit.contain,
-                      ),
+                        ),
+                        // Inner radial glow
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: [
+                                AppColors.primary.withOpacity(0.25),
+                                Colors.transparent,
+                              ],
+                              stops: const [0.0, 0.8],
+                            ),
+                          ),
+                        ),
+                        // Logo image with proper background handling
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(
+                            'assets/icons/Text.png',
+                            width: 280,
+                            height: 280,
+                            fit: BoxFit.contain,
+                            // Remove any background color from the image
+                            color: null,
+                            colorBlendMode: BlendMode.dst,
+                          ),
+                        ),
+                      ],
                     ),
                     
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 0),
                     
                     // Title
                     Text(

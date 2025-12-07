@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../auth/data/providers/auth_provider.dart';
 import '../../../../shared/theme/app_colors.dart';
 
@@ -40,8 +41,8 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // Navigate to login
-                      Navigator.pushReplacementNamed(context, '/login');
+                      // Navigate to login using go_router
+                      context.go('/login');
                     },
                     icon: const Icon(Icons.login),
                     label: const Text('Sign In'),
@@ -164,7 +165,7 @@ class ProfileScreen extends ConsumerWidget {
                     if (shouldLogout == true && context.mounted) {
                       await ref.read(authProvider.notifier).logout();
                       if (context.mounted) {
-                        Navigator.pushReplacementNamed(context, '/login');
+                        context.go('/login');
                       }
                     }
                   },

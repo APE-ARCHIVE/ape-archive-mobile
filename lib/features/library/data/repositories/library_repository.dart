@@ -21,7 +21,30 @@ class LibraryRepository {
       final response = await _dio.get(
         '${ApiConstants.baseApiUrl}${ApiConstants.libraryHierarchy}',
       );
-      final List<dynamic> data = response.data;
+      
+      // Handle both wrapped and direct response formats
+      final responseData = response.data;
+      List<dynamic> data;
+      
+      if (responseData is Map<String, dynamic>) {
+        // If response has a 'data' field containing the list
+        if (responseData.containsKey('data') && responseData['data'] is List) {
+          data = responseData['data'];
+        } else {
+          throw ServerException(
+            message: 'Invalid response format: expected list in data field',
+            statusCode: response.statusCode,
+          );
+        }
+      } else if (responseData is List) {
+        data = responseData;
+      } else {
+        throw ServerException(
+          message: 'Invalid response format from server',
+          statusCode: response.statusCode,
+        );
+      }
+      
       return data.map((json) => TagHierarchyNode.fromJson(json)).toList();
     } on DioException catch (e) {
       String errorMessage = 'Failed to fetch hierarchy';
@@ -86,7 +109,21 @@ class LibraryRepository {
         queryParameters: queryParams,
       );
 
-      return PaginatedResourceResponse.fromJson(response.data);
+      // Handle both wrapped and direct response formats
+      final responseData = response.data;
+      if (responseData is Map<String, dynamic>) {
+        // If response has a 'data' field containing the paginated response
+        if (responseData.containsKey('data') && responseData['data'] is Map) {
+          return PaginatedResourceResponse.fromJson(responseData['data']);
+        }
+        // Otherwise assume the response itself is the paginated response
+        return PaginatedResourceResponse.fromJson(responseData);
+      }
+      
+      throw ServerException(
+        message: 'Invalid response format from server',
+        statusCode: response.statusCode,
+      );
     } on DioException catch (e) {
       String errorMessage = 'Failed to fetch resources';
       
@@ -124,7 +161,22 @@ class LibraryRepository {
       final response = await _dio.get(
         '${ApiConstants.baseApiUrl}${ApiConstants.resourceById}/$id',
       );
-      return ResourceModel.fromJson(response.data);
+      
+      // Handle both wrapped and direct response formats
+      final responseData = response.data;
+      if (responseData is Map<String, dynamic>) {
+        // If response has a 'data' field containing the resource
+        if (responseData.containsKey('data') && responseData['data'] is Map) {
+          return ResourceModel.fromJson(responseData['data']);
+        }
+        // Otherwise assume the response itself is the resource
+        return ResourceModel.fromJson(responseData);
+      }
+      
+      throw ServerException(
+        message: 'Invalid response format from server',
+        statusCode: response.statusCode,
+      );
     } on DioException catch (e) {
       throw ServerException(
         message: e.response?.data['message'] ?? 'Failed to fetch resource',

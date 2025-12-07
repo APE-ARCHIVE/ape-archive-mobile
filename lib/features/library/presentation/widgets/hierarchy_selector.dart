@@ -89,12 +89,32 @@ class _HierarchySelectorState extends ConsumerState<HierarchySelector> {
       ),
       error: (error, stack) => Padding(
         padding: const EdgeInsets.all(16),
-        child: Text(
-          'Failed to load hierarchy',
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall
-              ?.copyWith(color: AppColors.error),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Failed to load hierarchy',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColors.error),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              error.toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColors.textTertiary, fontSize: 11),
+            ),
+            const SizedBox(height: 8),
+            TextButton.icon(
+              onPressed: () => ref.refresh(hierarchyProvider),
+              icon: const Icon(Icons.refresh, size: 16),
+              label: const Text('Retry'),
+            ),
+          ],
         ),
       ),
     );

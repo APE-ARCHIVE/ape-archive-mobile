@@ -96,26 +96,42 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Logo with glow effect
-                        Container(
-                          width: 280,
-                          height: 280,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primary.withOpacity(0.3),
-                                blurRadius: 40,
-                                spreadRadius: 10,
+                        // Logo with subtle glow effect
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Soft glow behind logo
+                            Container(
+                              width: 200,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withOpacity(0.15),
+                                    blurRadius: 60,
+                                    spreadRadius: 30,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          child: Image.asset(
-                            'assets/icons/Logo_with_text.png',
-                            width: 280,
-                            height: 280,
-                            fit: BoxFit.contain,
-                          ),
+                            ),
+                            // Logo image
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: ColorFiltered(
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.transparent,
+                                  BlendMode.multiply,
+                                ),
+                                child: Image.asset(
+                                  'assets/icons/Logo_with_text.png',
+                                  width: 240,
+                                  height: 240,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 40),
                         // Loading indicator
