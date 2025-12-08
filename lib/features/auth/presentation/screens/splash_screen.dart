@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:math' as math;
 import '../../../../shared/theme/app_colors.dart';
+import '../../../../shared/widgets/grid_background.dart';
 import '../../data/providers/auth_provider.dart';
 
 /// Modern professional splash screen with sophisticated animations
@@ -141,25 +142,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
     
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
-      body: Stack(
-        children: [
-          // Animated grid background
-          Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _particleController,
-              builder: (context, child) {
-                return CustomPaint(
-                  painter: AnimatedGridPainter(
-                    gridColor: AppColors.gridDark,
-                    gridSize: 40.0,
-                    animationValue: _particleController.value,
-                  ),
-                );
-              },
-            ),
-          ),
-          
-          // Floating particles
+      body: GridBackground(
+        backgroundColor: AppColors.backgroundDark,
+        child: Stack(
+          children: [
+            // Floating particles
           ...List.generate(20, (index) {
             return AnimatedBuilder(
               animation: _particleController,
@@ -377,81 +364,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
               },
             ),
           ),
-          
-          // Bottom gradient fade
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 100,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    AppColors.backgroundDark.withOpacity(0.8),
-                  ],
-                ),
-              ),
-            ),
-          ),
         ],
+      ),
       ),
     );
   }
 }
 
-/// Animated grid painter with fade effect
-class AnimatedGridPainter extends CustomPainter {
-  final Color gridColor;
-  final double gridSize;
-  final double animationValue;
-
-  AnimatedGridPainter({
-    required this.gridColor,
-    required this.gridSize,
-    required this.animationValue,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..strokeWidth = 0.75
-      ..style = PaintingStyle.stroke
-      ..isAntiAlias = true;
-
-    final centerX = size.width / 2;
-    final centerY = size.height / 2;
-
-    for (double x = gridSize; x < size.width - gridSize; x += gridSize) {
-      final distanceFromCenter = (x - centerX).abs() / centerX;
-      final opacity = (0.08 * (1 - distanceFromCenter * 0.5)).clamp(0.02, 0.1);
-      
-      paint.color = gridColor.withOpacity(opacity);
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
-    }
-
-    for (double y = gridSize; y < size.height - gridSize; y += gridSize) {
-      final distanceFromCenter = (y - centerY).abs() / centerY;
-      final opacity = (0.08 * (1 - distanceFromCenter * 0.5)).clamp(0.02, 0.1);
-      
-      paint.color = gridColor.withOpacity(opacity);
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant AnimatedGridPainter oldDelegate) {
-    return oldDelegate.animationValue != animationValue;
-  }
-}
