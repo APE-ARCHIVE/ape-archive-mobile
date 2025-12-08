@@ -118,9 +118,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
     final authState = ref.read(authProvider);
     
     if (authState.user != null) {
-      context.go('/');
+      // Navigate and remove splash from stack
+      context.pushReplacement('/');
     } else {
-      context.go('/login');
+      // Navigate and remove splash from stack
+      context.pushReplacement('/login');
     }
   }
 

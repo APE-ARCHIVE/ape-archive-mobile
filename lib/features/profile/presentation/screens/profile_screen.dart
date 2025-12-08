@@ -354,7 +354,7 @@ class ProfileScreen extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.07),
+            color: Colors.white.withOpacity(0.03),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: Colors.white.withOpacity(0.08),
@@ -464,6 +464,7 @@ class ProfileScreen extends ConsumerWidget {
     if (shouldLogout == true && context.mounted) {
       await ref.read(authProvider.notifier).logout();
       if (context.mounted) {
+        // Go directly to login, bypassing splash screen
         context.go('/login');
       }
     }

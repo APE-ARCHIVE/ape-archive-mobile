@@ -16,7 +16,8 @@ class LoginScreen extends ConsumerWidget {
     // Navigate to home when authenticated
     ref.listen<AuthState>(authProvider, (previous, next) {
       if (next.isAuthenticated && previous?.isAuthenticated != true) {
-        context.go('/');
+        // Use pushReplacement to trigger the page transition animation
+        context.pushReplacement('/');
       }
     });
 

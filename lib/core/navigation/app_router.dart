@@ -22,9 +22,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SplashScreen(),
+          transitionDuration: const Duration(milliseconds: 300),
+          reverseTransitionDuration: const Duration(milliseconds: 400),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            // Fade in when entering
+            if (secondaryAnimation.status == AnimationStatus.dismissed) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            }
+            // Fade out when leaving
             return FadeTransition(
-              opacity: animation,
+              opacity: Tween<double>(begin: 1.0, end: 0.0).animate(
+                CurvedAnimation(
+                  parent: secondaryAnimation,
+                  curve: Curves.easeOut,
+                ),
+              ),
               child: child,
             );
           },
@@ -35,17 +50,30 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const AppNavigation(),
+          transitionDuration: const Duration(milliseconds: 600),
+          reverseTransitionDuration: const Duration(milliseconds: 400),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            // Handle splash screen exit
+            if (secondaryAnimation.status != AnimationStatus.dismissed) {
+              return FadeTransition(
+                opacity: Tween<double>(begin: 1.0, end: 0.0).animate(secondaryAnimation),
+                child: child,
+              );
+            }
+            
+            // Welcoming fade + scale up transition
             return FadeTransition(
-              opacity: animation,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0.0, 0.05),
-                  end: Offset.zero,
-                ).animate(CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.easeOutCubic,
-                )),
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              ),
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.92, end: 1.0).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ),
                 child: child,
               ),
             );
@@ -57,21 +85,32 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const LoginScreen(),
-          transitionDuration: const Duration(milliseconds: 400),
+          transitionDuration: const Duration(milliseconds: 500),
           reverseTransitionDuration: const Duration(milliseconds: 400),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            // iOS-style slide transition
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
+            // Handle splash screen exit
+            if (secondaryAnimation.status != AnimationStatus.dismissed) {
+              return FadeTransition(
+                opacity: Tween<double>(begin: 1.0, end: 0.0).animate(secondaryAnimation),
+                child: child,
+              );
+            }
+            
+            // iOS-style slide transition for login entrance
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeInOut,
+                  ),
+                ),
+                child: child,
+              ),
             );
           },
         ),
