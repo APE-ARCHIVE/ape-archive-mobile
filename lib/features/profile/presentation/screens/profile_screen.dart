@@ -462,11 +462,10 @@ class ProfileScreen extends ConsumerWidget {
     );
 
     if (shouldLogout == true && context.mounted) {
+      // Navigate immediately to prevent guest view flash
+      context.go('/login');
+      // Then logout (this will update state but screen is already changing)
       await ref.read(authProvider.notifier).logout();
-      if (context.mounted) {
-        // Go directly to login, bypassing splash screen
-        context.go('/login');
-      }
     }
   }
 
