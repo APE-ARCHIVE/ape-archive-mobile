@@ -153,30 +153,40 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
               ),
             ),
           ),
-          if (_selectedTags[TagType.grade] != null) ...[
-            const Icon(Icons.chevron_right, size: 16),
-            _buildBreadcrumbItem(
-              context,
-              _selectedTags[TagType.grade]!.name,
-              () => _clearFrom(TagType.grade),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_selectedTags[TagType.grade] != null) ...[
+                    const Icon(Icons.chevron_right, size: 16),
+                    _buildBreadcrumbItem(
+                      context,
+                      _selectedTags[TagType.grade]!.name,
+                      () => _clearFrom(TagType.grade),
+                    ),
+                  ],
+                  if (_selectedTags[TagType.subject] != null) ...[
+                    const Icon(Icons.chevron_right, size: 16),
+                    _buildBreadcrumbItem(
+                      context,
+                      _selectedTags[TagType.subject]!.name,
+                      () => _clearFrom(TagType.subject),
+                    ),
+                  ],
+                  if (_selectedTags[TagType.medium] != null) ...[
+                    const Icon(Icons.chevron_right, size: 16),
+                    _buildBreadcrumbItem(
+                      context,
+                      _selectedTags[TagType.medium]!.name,
+                      () => _clearFrom(TagType.medium),
+                    ),
+                  ],
+                ],
+              ),
             ),
-          ],
-          if (_selectedTags[TagType.subject] != null) ...[
-            const Icon(Icons.chevron_right, size: 16),
-            _buildBreadcrumbItem(
-              context,
-              _selectedTags[TagType.subject]!.name,
-              () => _clearFrom(TagType.subject),
-            ),
-          ],
-          if (_selectedTags[TagType.medium] != null) ...[
-            const Icon(Icons.chevron_right, size: 16),
-            _buildBreadcrumbItem(
-              context,
-              _selectedTags[TagType.medium]!.name,
-              () => _clearFrom(TagType.medium),
-            ),
-          ],
+          ),
         ],
       ),
     );
@@ -275,8 +285,6 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
   }
 
   Widget _buildCategoryCard(BuildContext context, TagHierarchyNode node) {
-    final colors = _getColorForTagType(node.tag.type);
-    
     return Material(
       elevation: 0,
       borderRadius: BorderRadius.circular(16),
@@ -285,16 +293,18 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
         borderRadius: BorderRadius.circular(16),
         child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: colors,
-            ),
+            // Transparent effect with subtle border
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Colors.grey.withOpacity(0.2),
+              width: 1.5,
+            ),
             boxShadow: [
+              // Subtle shadow for depth
               BoxShadow(
-                color: colors[0].withOpacity(0.3),
-                blurRadius: 8,
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
             ],
@@ -308,7 +318,7 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
                 child: Icon(
                   _getIconForTagType(node.tag.type),
                   size: 80,
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withOpacity(0.08),
                 ),
               ),
               // Content
@@ -322,12 +332,16 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.transparent,
+                        border: Border.all(
+                          color: Colors.grey.withOpacity(0.2),
+                          width: 1,
+                        ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
                         _getIconForTagType(node.tag.type),
-                        color: Colors.white,
+                        color: Colors.white.withOpacity(0.8),
                         size: 28,
                       ),
                     ),
@@ -338,7 +352,7 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
                         Text(
                           node.tag.name,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.white,
+                            color: Colors.white.withOpacity(0.9),
                             fontWeight: FontWeight.bold,
                           ),
                           maxLines: 2,
@@ -350,7 +364,7 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
                             Text(
                               'Explore',
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withOpacity(0.75),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -358,7 +372,7 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
                             Icon(
                               Icons.arrow_forward,
                               size: 14,
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withOpacity(0.75),
                             ),
                           ],
                         ),
@@ -372,21 +386,6 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
         ),
       ),
     );
-  }
-
-  List<Color> _getColorForTagType(TagType type) {
-    switch (type) {
-      case TagType.grade:
-        return [const Color(0xFF667eea), const Color(0xFF764ba2)];
-      case TagType.subject:
-        return [const Color(0xFF11998e), const Color(0xFF38ef7d)];
-      case TagType.medium:
-        return [const Color(0xFFf093fb), const Color(0xFFf5576c)];
-      case TagType.resourceType:
-        return [const Color(0xFFfa709a), const Color(0xFFfee140)];
-      case TagType.lesson:
-        return [const Color(0xFF4facfe), const Color(0xFF00f2fe)];
-    }
   }
 
   IconData _getIconForTagType(TagType type) {
@@ -413,14 +412,18 @@ class _CategoryGridSelectorState extends ConsumerState<CategoryGridSelector> {
   }
 
   String _getHeaderSubtitle() {
-    if (_selectedTags[TagType.grade] == null) 
+    if (_selectedTags[TagType.grade] == null) {
       return 'Choose your grade level to get started';
-    if (_selectedTags[TagType.subject] == null) 
+    }
+    if (_selectedTags[TagType.subject] == null) {
       return 'Select a subject from ${_selectedTags[TagType.grade]!.name}';
-    if (_selectedTags[TagType.medium] == null) 
+    }
+    if (_selectedTags[TagType.medium] == null) {
       return 'Choose your preferred learning medium';
-    if (_selectedTags[TagType.resourceType] == null) 
+    }
+    if (_selectedTags[TagType.resourceType] == null) {
       return 'What type of resource are you looking for?';
+    }
     return 'Explore available resources';
   }
 

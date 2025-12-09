@@ -53,35 +53,54 @@ class _LibraryBrowseScreenState extends ConsumerState<LibraryBrowseScreen> {
     final bool showCategorySelector = selectedTagIds.length < 4; // Show until all 4 levels selected
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Library'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // Navigate to search screen
-            },
-          ),
-        ],
-      ),
       body: GridBackground(
         backgroundColor: AppColors.backgroundDark,
-        child: showCategorySelector && browseState.resources.isEmpty
-          ? // Show category grid when no resources loaded yet
-            CategoryGridSelector(
-              selectedTagIds: selectedTagIds,
-              onTagsSelected: (tagIds, tagFilters) {
-                setState(() => selectedTagIds = tagIds);
-                ref.read(browseProvider.notifier).filterByTags(tagIds, tagFilters);
-              },
-            )
-          : // Show resources when available
-            RefreshIndicator(
-              onRefresh: () =>
-                  ref.read(browseProvider.notifier).loadResources(refresh: true),
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Large title section with search icon
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Library',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 32,
+                        color: Colors.white,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.search, size: 28, color: Colors.white),
+                      onPressed: () {
+                        // Navigate to search screen
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Main content area
+              Expanded(
+                child: showCategorySelector && browseState.resources.isEmpty
+                  ? // Show category grid when no resources loaded yet
+                    CategoryGridSelector(
+                      selectedTagIds: selectedTagIds,
+                      onTagsSelected: (tagIds, tagFilters) {
+                        setState(() => selectedTagIds = tagIds);
+                        ref.read(browseProvider.notifier).filterByTags(tagIds, tagFilters);
+                      },
+                    )
+                  : // Show resources when available
+                    RefreshIndicator(
+                      onRefresh: () =>
+                          ref.read(browseProvider.notifier).loadResources(refresh: true),
+                      child: CustomScrollView(
+                        controller: _scrollController,
+                        slivers: [
                   // Web platform notice
                   if (kIsWeb)
                     SliverToBoxAdapter(
@@ -209,9 +228,13 @@ class _LibraryBrowseScreenState extends ConsumerState<LibraryBrowseScreen> {
                   const SliverToBoxAdapter(
                     child: SizedBox(height: 16),
                   ),
-                ],
+                        ],
+                      ),
+                    ),
               ),
-            ),
+            ],
+          ),
+        ),
       ),
     );
   }

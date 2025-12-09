@@ -18,10 +18,10 @@ class LibraryRepository {
   /// Get library hierarchy (Grade -> Subject -> Lesson -> Medium)
   Future<List<TagHierarchyNode>> getHierarchy() async {
     try {
-      print('📚 Fetching hierarchy from: ${ApiConstants.baseApiUrl}${ApiConstants.libraryHierarchy}');
+      print('📚 Fetching hierarchy from: ${ApiConstants.libraryHierarchy}');
       
       final response = await _dio.get(
-        '${ApiConstants.baseApiUrl}${ApiConstants.libraryHierarchy}',
+        ApiConstants.libraryHierarchy,
       );
       
       print('📚 Hierarchy response status: ${response.statusCode}');
@@ -164,11 +164,11 @@ class LibraryRepository {
         queryParams['search'] = search;
       }
 
-      print('📚 Fetching resources from: ${ApiConstants.baseApiUrl}${ApiConstants.libraryBrowse}');
+      print('📚 Fetching resources from: ${ApiConstants.libraryBrowse}');
       print('📚 Query params: $queryParams');
       
       final response = await _dio.get(
-        '${ApiConstants.baseApiUrl}${ApiConstants.libraryBrowse}',
+        ApiConstants.libraryBrowse,
         queryParameters: queryParams,
       );
       
@@ -225,7 +225,7 @@ class LibraryRepository {
   Future<ResourceModel> getResourceById(String id) async {
     try {
       final response = await _dio.get(
-        '${ApiConstants.baseApiUrl}${ApiConstants.resourceById}/$id',
+        '${ApiConstants.resourceById}/$id',
       );
       
       // Handle both wrapped and direct response formats
