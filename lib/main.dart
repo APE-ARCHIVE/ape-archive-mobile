@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'shared/theme/app_theme.dart';
 import 'core/navigation/app_router.dart';
+import 'core/services/deep_link_service.dart';
+import 'features/auth/data/providers/auth_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,11 +33,49 @@ void main() {
   );
 }
 
-class ApeArchiveApp extends ConsumerWidget {
+class ApeArchiveApp extends ConsumerStatefulWidget {
   const ApeArchiveApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ApeArchiveApp> createState() => _ApeArchiveAppState();
+}
+
+class _ApeArchiveAppState extends ConsumerState<ApeArchiveApp> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeDeepLinks();
+  }
+
+  void _initializeDeepLinks() {
+    final deepLinkService = ref.read(deepLinkServiceProvider);
+    
+    deepLinkService.initialize(
+      onLinkReceived: (Uri uri) {
+        _handleDeepLink(uri);
+      },
+    );
+  }
+
+  void _handleDeepLink(Uri uri) {
+    debugPrint('Handling deep link: $uri');
+    
+    // Check if it's an auth callback
+    if (uri.scheme == 'apearchive' && uri.host == 'auth') {
+      final accessToken = uri.queryParameters['access_token'];
+      
+      if (accessToken != null && accessToken.isNotEmpty) {
+        debugPrint('Access token received from deep link');
+        // Handle the auth callback
+        ref.read(authProvider.notifier).handleAuthCallback(accessToken);
+      } else {
+        debugPrint('No access token in deep link');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
 
     return Container(
@@ -55,5 +95,11 @@ class ApeArchiveApp extends ConsumerWidget {
         routerConfig: router,
       ),
     );
+  }
+  
+  @override
+  void dispose() {
+    ref.read(deepLinkServiceProvider).dispose();
+    super.dispose();
   }
 }

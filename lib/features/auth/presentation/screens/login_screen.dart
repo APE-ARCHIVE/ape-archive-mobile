@@ -109,30 +109,68 @@ class LoginScreen extends ConsumerWidget {
                     
                     // Sign in with Google button
                     if (authState.isLoading)
-                      const CircularProgressIndicator()
+                      Column(
+                        children: [
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Signing in...',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      )
                     else
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
                           onPressed: () async {
                             try {
+                              // Show loading message
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Opening Google Sign-In...'),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              }
+                              
                               final signInUrl = await ref
                                   .read(authProvider.notifier)
                                   .initiateGoogleSignIn();
                               
                               final uri = Uri.parse(signInUrl);
                               if (await canLaunchUrl(uri)) {
-                                await launchUrl(
+                                final launched = await launchUrl(
                                   uri,
                                   mode: LaunchMode.externalApplication,
+                                );
+                                
+                                if (!launched && context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Could not open browser. Please try again.'),
+                                      backgroundColor: AppColors.error,
+                                    ),
+                                  );
+                                }
+                              } else if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Could not open sign-in page'),
+                                    backgroundColor: AppColors.error,
+                                  ),
                                 );
                               }
                             } catch (e) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('Sign-in failed: $e'),
+                                    content: Text('Sign-in failed: ${e.toString()}'),
                                     backgroundColor: AppColors.error,
+                                    duration: const Duration(seconds: 4),
                                   ),
                                 );
                               }
@@ -263,21 +301,4 @@ class GridPatternPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class _FeatureChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
 
-  const _FeatureChip({
-    required this.icon,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(
-      avatar: Icon(icon, size: 18),
-      label: Text(label),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    );
-  }
-}
